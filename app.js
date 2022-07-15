@@ -1,22 +1,29 @@
 const express=require("express");
 const bodyParser=require("body-parser");
+const date=require(__dirname+"/date.js");
+let items=["buy food","cook food","eat food"];
+
 
 const app=express();
 app.set("view engine","ejs")
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(express.static("public"))
 
 app.get("/",function(req,res){
 
-    let today=new Date();
-    let currentDay=today.getDay();
-    
-    let option={
-        weekday:"long",
-        day:"numeric",
-        month:"long"
-    }
+    let week=date.getDate();
 
+    res.render("list",{week:week, newItems:items});
+})
 
-    res.render("list",{week:week})
+app.get("/index",function(req,res){
+    res.render("index")
+});
+
+app.post("/",function(req,res){
+    let item=req.body.newItem;
+    items.push(item)
+    res.redirect("/");
 })
 
 
